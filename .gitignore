@@ -1,0 +1,11 @@
+# Entorno virtual y archivos de entorno
+env/
+.env
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+# Logs
+logs/
+# Archivos del sistema
+.DS_Store
+*.log
