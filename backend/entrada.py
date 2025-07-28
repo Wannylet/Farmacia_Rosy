@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 # Rutas
-from backend.router.iniciar_sesion import router as router_iniciar_sesion
+from backend.routers.iniciar_sesion import router as router_iniciar_sesion
 
 # Librerias
 import os
@@ -12,14 +12,14 @@ import os
 app = FastAPI()
 
 # Ruta absoluta a la carpeta frontend
-frontend_path = os.path.join(os.path.dirname(__file__), "..", "frontend")
+ruta_dist = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))
 
 # Servir archivos estáticos desde la carpeta frontend
-app.mount("/frontend", StaticFiles(directory=frontend_path, html=True), name="frontend")
+app.mount("/", StaticFiles(directory=ruta_dist, html=True), name="frontend")
 
-# (Opcional) Ruta explícita para /
-@app.get("/")
-async def srv_iniciar_sesion():
-	return FileResponse("frontend/iniciar-sesion.html")
+# Ruta fallback para Vue Router (todas las rutas no encontradas van a index.html)
+@app.get("/{full_path:path}")
+async def retroceso_vue_router(full_path: str):
+    return FileResponse(os.path.join(ruta_dist, "index.html"))
 
 app.include_router(router_iniciar_sesion)
